@@ -10,6 +10,8 @@
 !.yarn/releases
 !.yarn/versions
 
+azure-sql-crud-app/backend/target/
+
 # testing
 /coverage
 
