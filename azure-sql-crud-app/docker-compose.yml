@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: azurecrud-backend
+    environment:
+      # *** FILL THESE IN ***
+      SPRING_DATASOURCE_URL: "jdbc:sqlserver://<AZURE_SERVER>.database.windows.net:1433;database=<DB_NAME>;encrypt=true;trustServerCertificate=false;loginTimeout=30;"
+      SPRING_DATASOURCE_USERNAME: "<AZURE_USERNAME>"   # e.g. myadmin@<AZURE_SERVER>
+      SPRING_DATASOURCE_PASSWORD: "<AZURE_PASSWORD>"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+      SPRING_JPA_SHOW_SQL: "true"
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: azurecrud-frontend
+    environment:
+      # Backend base URL the React app will call (set to your public domain/IP)
+      REACT_APP_API_URL: "http://<YOUR_PUBLIC_HOST_OR_IP>:8080/api"
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

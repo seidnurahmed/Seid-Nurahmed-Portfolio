@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Seid Nurahmed Portfolio</title>
+
+  <!-- Favicon & PWA assets -->
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+  <link rel="manifest" href="./site.webmanifest">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0f1a; --panel:#11162a; --muted:#9aa4b2; --accent:#8b5cf6;
+      --nav-h:72px;
+    }
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      color:#e5e7eb;
+      background:
+        radial-gradient(900px 600px at 50% -10%, rgba(99,102,241,.12), transparent 60%),
+        radial-gradient(1200px 900px at -10% 120%, rgba(59,130,246,.10), transparent 60%),
+        var(--bg);
+      background-attachment: fixed,fixed,scroll;
+    }
+
+    .nav-fixed{
+      position:fixed; top:12px; left:50%; transform:translateX(-50%);
+      width:min(1100px,92vw); z-index:50;
+      border-radius:9999px; border:1px solid rgba(255,255,255,.06);
+      background:rgba(0,0,0,.45); backdrop-filter: blur(10px);
+      box-shadow:0 10px 35px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    section{scroll-margin-top: calc(var(--nav-h) + 28px);}
+    .glass{background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); backdrop-filter: blur(8px);}
+    .link{color:var(--muted)} .link:hover{color:#fff}
+
+    .cursor-dot{
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background: radial-gradient(
+        clamp(320px, 38vw, 700px) circle at var(--mx,50%) var(--my,50%),
+        rgba(99,102,241,.22), transparent 55%
+      );
+    }
+
+    @keyframes blinkCursor {
+      0%,49% { border-color: rgba(255,255,255,.75); }
+      50%,100% { border-color: transparent; }
+    }
+    .type{
+      display:inline-block;
+      white-space:nowrap;
+      overflow:hidden;
+      border-right:2px solid rgba(255,255,255,.75);
+      padding-right:2px;
+      margin-right:-2px;
+      animation: blinkCursor .8s step-end infinite;
+    }
+
+    .section-title{ text-align:center; font-weight:700; font-size:clamp(1.6rem, 3vw, 2.25rem); margin-bottom:.6rem;}
+
+    .mask-fade{
+      -webkit-mask: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+              mask: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+    }
+    .marquee{ display:flex; gap:.75rem; width:max-content; animation:scroll 24s linear infinite; }
+    .marquee:hover{animation-play-state:paused}
+    @keyframes scroll{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .chip{ padding:.6rem .9rem; border-radius:.9rem; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.04); white-space:nowrap;}
+
+    .tab-btn{
+      border:1px solid rgba(255,255,255,.12); border-radius:.9rem; padding:.6rem 1rem;
+      background:rgba(255,255,255,.02); transition:all .2s ease;
+    }
+    .tab-btn[aria-selected="true"]{ border-color:rgba(255,255,255,.45); box-shadow:inset 0 0 0 1px rgba(255,255,255,.15); background:rgba(255,255,255,.06); }
+
+    .timeline{ position:relative; }
+    .timeline:before{ content:""; display:none; position:absolute; left:50%; top:0; bottom:0;
+      width:2px; background:linear-gradient(180deg, transparent, rgba(255,255,255,.18), transparent);
+      transform:translateX(-50%);
+    }
+    @media (min-width:1024px){ .timeline:before{ display:block; } }
+
+    .t-card{
+      width:min(520px, 92vw); border-radius:1rem; border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03); backdrop-filter:blur(8px);
+      opacity:0; transform:translateY(12px); transition:opacity .5s ease, transform .5s ease;
+    }
+    .t-card.show{opacity:1; transform:none}
+    .dot{ position:absolute; left:50%; width:12px; height:12px; border-radius:9999px; background:#e5e7eb; transform:translate(-50%,-50%); box-shadow:0 0 0 4px rgba(255,255,255,.15); }
+
+    .section-wrap{position:relative; z-index:1}
+    .container{width:min(1100px,92vw); margin-inline:auto;}
+  </style>
+</head>
+<body>
+
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <nav class="nav-fixed px-5 py-3 flex items-center justify-between">
+    <a href="#top" class="font-bold tracking-tight">SN</a>
+    <div class="flex items-center gap-4 text-sm">
+      <a class="link" href="#about">About</a>
+      <a class="link" href="#experience">Experience</a>
+      <a class="link" href="#projects">Projects</a>
+      <a class="link" href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <div id="top" style="height:calc(var(--nav-h) + 28px)"></div>
+
+  <!-- HERO -->
+  <header class="container pt-10 pb-10 section-wrap">
+    <div class="text-center space-y-5">
+      <h1 class="type mx-auto font-bold leading-tight text-[clamp(40px,7vw,80px)]" id="typewriter"></h1>
+      <p class="text-lg text-slate-300/85 max-w-2xl mx-auto">
+        Computer Engineering student at The Ohio State University focused on building secure, scalable systems across
+        full-stack web, cloud, and machine learning software
+      </p>
+    </div>
+  </header>
+
+  <!-- ABOUT (narrow card) -->
+  <section id="about" class="container section-wrap pb-8">
+    <h2 class="section-title">About</h2>
+    <div class="glass rounded-2xl p-6 md:p-7 w-[92%] max-w-3xl mx-auto">
+      <p class="text-slate-300/90">
+        I enjoy turning ideas into reliable, user-friendly products. Recent work spans Python/Java backends, modern
+        React front-ends, and Azure-powered services. I care about clean architecture, great DX, and performance—and my goal
+        is to use those skills to build secure, intelligent systems that make a real impact.
+      </p>
+    </div>
+  </section>
+
+  <!-- TECH STACK (narrow card) -->
+  <section class="container section-wrap pt-4 pb-10">
+    <h2 class="section-title">Tech Stack</h2>
+
+    <div class="flex flex-wrap gap-3 justify-center mb-4">
+      <button class="tab-btn" aria-selected="true" data-tab="lang">Programming Languages</button>
+      <button class="tab-btn" aria-selected="false" data-tab="fw">Frameworks & Libraries</button>
+      <button class="tab-btn" aria-selected="false" data-tab="tools">Databases & Tools</button>
+    </div>
+
+    <div class="glass rounded-2xl p-4 md:p-6 overflow-hidden mask-fade w-[92%] max-w-4xl mx-auto">
+      <!-- LANGUAGES -->
+      <div class="tab" id="tab-lang">
+        <div class="marquee">
+          <div class="flex gap-3 pr-6">
+            <span class="chip">Python</span><span class="chip">Java</span><span class="chip">JavaScript</span>
+            <span class="chip">TypeScript</span><span class="chip">HTML</span><span class="chip">CSS</span>
+            <span class="chip">SQL</span><span class="chip">C++</span><span class="chip">MATLAB</span>
+          </div>
+          <div class="flex gap-3 pr-6" aria-hidden="true">
+            <span class="chip">Python</span><span class="chip">Java</span><span class="chip">JavaScript</span>
+            <span class="chip">TypeScript</span><span class="chip">HTML</span><span class="chip">CSS</span>
+            <span class="chip">SQL</span><span class="chip">C++</span><span class="chip">MATLAB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FRAMEWORKS & LIBRARIES -->
+      <div class="tab hidden" id="tab-fw">
+        <div class="marquee">
+          <div class="flex gap-3 pr-6">
+            <span class="chip">React</span><span class="chip">Node.js</span><span class="chip">Express</span>
+            <span class="chip">Flask</span><span class="chip">Hugging Face</span>
+            <span class="chip">Plaid API</span><span class="chip">RESTful APIs</span>
+          </div>
+          <div class="flex gap-3 pr-6" aria-hidden="true">
+            <span class="chip">React</span><span class="chip">Node.js</span><span class="chip">Express</span>
+            <span class="chip">Flask</span><span class="chip">Hugging Face</span>
+            <span class="chip">Plaid API</span><span class="chip">RESTful APIs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATABASES & TOOLS -->
+      <div class="tab hidden" id="tab-tools">
+        <div class="marquee">
+          <div class="flex gap-3 pr-6">
+            <span class="chip">PostgreSQL</span><span class="chip">Microsoft Azure</span><span class="chip">Docker</span>
+            <span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">VS Code</span>
+            <span class="chip">Agile</span><span class="chip">Jira</span><span class="chip">Confluence</span>
+            <span class="chip">Microsoft Office</span>
+          </div>
+          <div class="flex gap-3 pr-6" aria-hidden="true">
+            <span class="chip">PostgreSQL</span><span class="chip">Microsoft Azure</span><span class="chip">Docker</span>
+            <span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">VS Code</span>
+            <span class="chip">Agile</span><span class="chip">Jira</span><span class="chip">Confluence</span>
+            <span class="chip">Microsoft Office</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" class="container section-wrap pb-12">
+    <h2 class="section-title">Experience</h2>
+
+    <div class="timeline pt-6 pb-2">
+      <div class="dot" style="top:0%"></div>
+      <div class="t-card p-5 md:p-6 mx-auto md:mx-0 md:ml-[calc(50%+24px)] mb-10">
+        <div class="text-slate-200 font-semibold">Software Engineer Intern @ JLG Industries</div>
+        <div class="text-sm text-slate-400 mb-3">May 2025 – Aug 2025</div>
+        <p class="text-slate-300/90">
+          Built a Python UI backed by REST APIs and Azure SQL to compare HTML reports, cutting review time by 92%.
+          Created a tree-diff helper for hierarchical configs with 100% defect detection, and automated
+          doc exports that save ~$14k and 60+ hours yearly.
+        </p>
+      </div>
+
+      <div class="dot" style="top:33%"></div>
+      <div class="t-card p-5 md:p-6 mx-auto md:mr-[calc(50%+24px)] mb-10">
+        <div class="text-slate-200 font-semibold">Software Engineer Intern @ TechCorp</div>
+        <div class="text-sm text-slate-400 mb-3">May 2024 – Aug 2024</div>
+        <p class="text-slate-300/90">
+          Resolved 95+ issues to improve stability by 30%, automated 10+ workflows in Python reducing manual effort by
+          60%, and shipped a monitoring dashboard that cut incident response time by 35%.
+        </p>
+      </div>
+
+      <div class="dot" style="top:66%"></div>
+      <div class="t-card p-5 md:p-6 mx-auto md:ml-[calc(50%+24px)]">
+        <div class="text-slate-200 font-semibold">Undergraduate Research Assistant @ OSU Engineering</div>
+        <div class="text-sm text-slate-400 mb-3">May 2023 – Aug 2023</div>
+        <p class="text-slate-300/90">
+          Cleaned and validated 800K+ data points (+25% accuracy), optimized SQL/data pipelines (-40% processing time),
+          and automated visual reports to give researchers real-time insights.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="container section-wrap pb-12">
+    <h2 class="section-title">Projects</h2>
+
+    <div class="mx-auto max-w-5xl px-4">
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+
+        <!-- Resume Analyzer -->
+        <article class="glass rounded-2xl p-6 h-full flex flex-col">
+          <h3 class="font-semibold text-lg mb-2">Resume Analyzer</h3>
+          <p class="text-slate-300/85 text-sm mb-4">
+            AI-powered app that delivers actionable resume feedback. Uses a pre-trained Hugging Face NER model + PyPDF2
+            to parse PDFs (~95% key-skill/contact extraction). Flask backend handles 100+ docs/hour; containerized with
+            Docker and deployed on Azure.
+          </p>
+          <div class="mt-auto">
+            <div class="text-sky-400 font-semibold text-sm mb-1">Tech Stack</div>
+            <div class="text-sm">Python • Flask • Hugging Face • React • PostgreSQL • Docker • Azure</div>
+            <div class="text-xs text-slate-400 mt-1">May 2025</div>
+          </div>
+        </article>
+
+        <!-- RSS Aggregator -->
+        <article class="glass rounded-2xl p-6 h-full flex flex-col">
+          <h3 class="font-semibold text-lg mb-2">RSS Aggregator</h3>
+          <p class="text-slate-300/85 text-sm mb-4">
+            High-throughput aggregator parsing 1M+ feeds into a clean UI. Intelligent filtering removes ads/duplicates
+            (+60% relevance); multi-threading cuts processing time by 50%.
+          </p>
+          <div class="mt-auto">
+            <div class="text-sky-400 font-semibold text-sm mb-1">Tech Stack</div>
+            <div class="text-sm">Java • HTML/CSS</div>
+            <div class="text-xs text-slate-400 mt-1">Oct 2024 – Nov 2024</div>
+          </div>
+        </article>
+
+        <!-- Budget Buddy (new) -->
+        <article class="glass rounded-2xl p-6 h-full flex flex-col">
+          <h3 class="font-semibold text-lg mb-2">Budget Buddy</h3>
+          <p class="text-slate-300/85 text-sm mb-4">
+            Full-stack finance app that streamlines tracking (≈90% less manual entry). Integrates Plaid to securely sync
+            multi-institution accounts (eliminates entry errors). Robust REST API with PostgreSQL ensures data integrity;
+            responsive React dashboard for spending insights.
+          </p>
+          <div class="mt-auto">
+            <div class="text-sky-400 font-semibold text-sm mb-1">Tech Stack</div>
+            <div class="text-sm">Node.js • Express • React • PostgreSQL • Docker • Azure • Plaid API</div>
+            <div class="text-xs text-slate-400 mt-1">Aug 2025</div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT (narrow card) -->
+  <footer id="contact" class="container section-wrap pb-16">
+    <h2 class="section-title">Contact</h2>
+
+    <div class="glass rounded-2xl p-5 md:p-6 text-center w-[92%] max-w-3xl mx-auto">
+      <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-[17px]">
+        <button id="copyEmail" class="flex items-center gap-2 hover:underline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="opacity-80"><path d="M4 4h16v16H4z" stroke="currentColor"/><path d="m22 6-10 7L2 6" stroke="currentColor"/></svg>
+          <span>seidnurahmed@gmail.com</span>
+        </button>
+
+        <a href="https://linkedin.com/in/seid-nurahmed/" target="_blank" rel="noreferrer" class="flex items-center gap-2 hover:underline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="opacity-80"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5C0 2.12 1.12 1 2.5 1S4.98 2.12 4.98 3.5zM.5 8h4V24h-4V8zM8 8h3.8v2.2h.06C12.7 8.9 14.4 8 16.6 8 21 8 22 10.7 22 15.1V24h-4v-7.8c0-1.9 0-4.3-2.6-4.3s-3 2-3 4.1V24H8V8z"/></svg>
+          <span>LinkedIn</span>
+        </a>
+
+        <a href="https://github.com/seidnurahmed" target="_blank" rel="noreferrer" class="flex items-center gap-2 hover:underline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="opacity-80"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.2.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.7 1.2 3.3.9.1-.7.4-1.2.7-1.5-2.7-.3-5.6-1.3-5.6-6a4.6 4.6 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.3 11.3 0 0 1 6 0c2.3-1.6 3.3-1.2 3.3-1.2.6 1.7.2 3 .1 3.3a4.6 4.6 0 0 1 1.2 3.2c0 4.8-2.9 5.7-5.6 6 .4.3.8 1 .8 2.1v3.1c0 .4.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+
+      <div class="mt-2 text-sm text-slate-400 text-center" id="copyMsg"></div>
+    </div>
+  </footer>
+
+  <script>
+    // cursor glow
+    const rootStyle = document.documentElement.style;
+    const cursorLayer = document.querySelector('.cursor-dot');
+    window.addEventListener('pointermove', (e)=>{
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      rootStyle.setProperty('--mx', x + '%');
+      rootStyle.setProperty('--my', y + '%');
+      cursorLayer.style.setProperty('--mx', x + '%');
+      cursorLayer.style.setProperty('--my', y + '%');
+    });
+
+    // Typewriter
+    const phrase = "Hello I'm Seid";
+    const t = document.getElementById('typewriter');
+    let i = 0;
+    (function typeNext(){
+      if(i <= phrase.length){
+        t.textContent = phrase.slice(0,i++);
+        setTimeout(typeNext, 180);
+      }
+    })();
+
+    // Copy email
+    document.getElementById('copyEmail').addEventListener('click', async ()=>{
+      const email = 'seidnurahmed@gmail.com';
+      try{
+        await navigator.clipboard.writeText(email);
+        document.getElementById('copyMsg').textContent = 'Email copied! ' + email;
+      }catch{
+        document.getElementById('copyMsg').textContent = 'Could not copy. Email: ' + email;
+      }
+    });
+
+    // Tabs
+    const tabs = {
+      lang: document.getElementById('tab-lang'),
+      fw: document.getElementById('tab-fw'),
+      tools: document.getElementById('tab-tools')
+    };
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.tab-btn').forEach(b=>b.setAttribute('aria-selected','false'));
+        btn.setAttribute('aria-selected','true');
+        const key = btn.dataset.tab;
+        Object.entries(tabs).forEach(([k,el])=> el.classList.toggle('hidden', k!==key));
+      });
+    });
+
+    // Timeline reveal
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
+      })
+    }, {threshold:.15});
+    document.querySelectorAll('.t-card').forEach(el=> io.observe(el));
+  </script>
+</body>
+</html>
